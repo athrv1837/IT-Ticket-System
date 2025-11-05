@@ -1,0 +1,56 @@
+package com.ticketsystem.ticketsystem.security;
+
+import java.security.Key;
+import java.util.Date;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Component;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
+
+@Component
+public class Jwtutil {
+    @Value("${jwt.secret}")
+    private String secretkey;
+
+    @Value("${jwt.expiration}")
+    private long expirationtime;
+
+    private Key getSigninkey(){
+        return Keys.hmacShaKeyFor(secretkey.getBytes());
+    }
+
+    public String generateToken(Authentication auth){
+        return Jwts.builder()
+                .setSubject(auth.getName())
+                .claim("role", auth.getAuthorities().iterator().next().getAuthority())
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + expirationtime))
+                .signWith(getSigninkey(),SignatureAlgorithm.HS256)
+                .compact();
+    }
+
+    public Claims extractClaims(String token){
+        return Jwts.parserBuilder()
+            .setSigningKey(getSigninkey())
+            .build()
+            .parseClaimsJws(token)
+            .getBody();
+    }
+
+    public String extractUsername(String token) {
+        return extractClaims(token).getSubject();
+    }
+
+    public boolean isTokenExpired(String token) {
+        return extractClaims(token).getExpiration().before(new Date());
+    }
+
+    public boolean validateToken(String token, String username) {
+        return (username.equals(extractUsername(token)) && !isTokenExpired(token));
+    }
+}
