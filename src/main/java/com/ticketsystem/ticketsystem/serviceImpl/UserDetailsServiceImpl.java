@@ -10,10 +10,11 @@ import org.springframework.stereotype.Service;
 import com.ticketsystem.ticketsystem.DTO.UserDTO;
 import com.ticketsystem.ticketsystem.entity.User;
 import com.ticketsystem.ticketsystem.entity.UserPrincipal;
+import com.ticketsystem.ticketsystem.enums.Role;
 import com.ticketsystem.ticketsystem.repository.UserRepository;
 
 @Service
-public class UserServiceImpl implements UserDetailsService {
+public class UserDetailsServiceImpl implements UserDetailsService {
     @Autowired
     private UserRepository userRepository;
 
@@ -26,13 +27,13 @@ public class UserServiceImpl implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
         return new UserPrincipal(user); // Wrap it
     }
-
+    
     public User createUser(UserDTO dto) {
         User user = new User();
         user.setUsername(dto.getUsername());
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
         user.setEmail(dto.getEmail());
-        user.setRole(dto.getRole());
+        user.setRole(dto.getRole() != null ? dto.getRole() : Role.EMPLOYEE);
         return userRepository.save(user);
     }
 }

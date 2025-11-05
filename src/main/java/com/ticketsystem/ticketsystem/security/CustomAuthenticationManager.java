@@ -11,12 +11,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CustomAutheticationManager implements AuthenticationManager {
+public class CustomAuthenticationManager implements AuthenticationManager {
 
     private final UserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;
 
-    public CustomAutheticationManager(UserDetailsService userDetailsService , PasswordEncoder passwordEncoder){
+    public CustomAuthenticationManager(UserDetailsService userDetailsService , PasswordEncoder passwordEncoder){
         this.userDetailsService = userDetailsService;
         this.passwordEncoder = passwordEncoder;
     }

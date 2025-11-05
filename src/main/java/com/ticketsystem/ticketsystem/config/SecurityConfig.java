@@ -12,13 +12,13 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.ticketsystem.ticketsystem.security.AuthenticationFilter;
-import com.ticketsystem.ticketsystem.security.CustomAccessDeniedhandler;
+import com.ticketsystem.ticketsystem.security.CustomAccessDeniedHandler;
 import com.ticketsystem.ticketsystem.security.CustomAuthenticationEntryPoint;
-import com.ticketsystem.ticketsystem.security.CustomAutheticationManager;
+import com.ticketsystem.ticketsystem.security.CustomAuthenticationManager;
 import com.ticketsystem.ticketsystem.security.ExceptionHandlerFilter;
 import com.ticketsystem.ticketsystem.security.JWTAuthFilter;
 import com.ticketsystem.ticketsystem.security.Jwtutil;
-import com.ticketsystem.ticketsystem.serviceImpl.UserServiceImpl;
+import com.ticketsystem.ticketsystem.serviceImpl.UserDetailsServiceImpl;
 
 @Configuration
 @EnableWebSecurity
@@ -35,15 +35,15 @@ public class SecurityConfig {
     // private UserServiceImpl userService;
     
     //Used constructor injection to avoid circular dependency
-    private final UserServiceImpl userService;
+    private final UserDetailsServiceImpl userService;
 
-    public SecurityConfig(UserServiceImpl userService, PasswordEncoder passwordEncoder) {
+    public SecurityConfig(UserDetailsServiceImpl userService, PasswordEncoder passwordEncoder) {
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
     }
 
     @Autowired
-    private CustomAccessDeniedhandler accessDeniedHandler;
+    private CustomAccessDeniedHandler accessDeniedHandler;
 
     @Autowired
     private CustomAuthenticationEntryPoint authenticationEntryPoint;
@@ -57,8 +57,8 @@ public class SecurityConfig {
     // }
 
     @Bean
-    public CustomAutheticationManager customAuthenticationManager() {
-        return new CustomAutheticationManager(userService,passwordEncoder);
+    public CustomAuthenticationManager customAuthenticationManager() {
+        return new CustomAuthenticationManager(userService,passwordEncoder);
     }
 
     @Bean

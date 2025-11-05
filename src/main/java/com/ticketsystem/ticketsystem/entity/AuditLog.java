@@ -24,6 +24,6 @@ public class AuditLog {
     private String action;
     private Long userId;
     private String changes;
-    private LocalDateTime timeStamp = LocalDateTime.now();
+    private LocalDateTime timestamp = LocalDateTime.now();
 
 }

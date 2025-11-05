@@ -1,5 +1,6 @@
 package com.ticketsystem.ticketsystem.entity;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -19,7 +20,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Comments {
+public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -33,6 +34,9 @@ public class Comments {
     @ManyToOne
     @JoinColumn(name = "creator_id")
     private User creator;
+
+    private LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime updatedAt = LocalDateTime.now();
 
     @OneToMany(mappedBy = "entityId", cascade = CascadeType.ALL)
     private List<AuditLog> auditLogs;

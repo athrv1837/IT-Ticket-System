@@ -39,7 +39,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter{
         }
     }
 
-    protected void succcessfulAuthentication(HttpServletRequest request , 
+    protected void successfulAuthentication(HttpServletRequest request , 
                     HttpServletResponse response , FilterChain chain , 
                     Authentication authResult) throws IOException{                                                                                                                                                                                                                                                                                                          
         String token = jwtutil.generateToken(authResult);

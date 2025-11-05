@@ -37,7 +37,7 @@ public class Ticket {
     private TicketCategory category;
 
     @Enumerated(EnumType.STRING)
-    private TicketStatus status;
+    private TicketStatus status = TicketStatus.NEW;
     
     @Enumerated(EnumType.STRING)
     private TicketPriority priority;
@@ -50,7 +50,7 @@ public class Ticket {
     private LocalDateTime updatedAt = LocalDateTime.now();
 
     @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL)
-    private List<Comments> comments;
+    private List<Comment> comments;
 
     @OneToMany(mappedBy = "entityId", cascade = CascadeType.ALL)
     private List<AuditLog> auditLogs;

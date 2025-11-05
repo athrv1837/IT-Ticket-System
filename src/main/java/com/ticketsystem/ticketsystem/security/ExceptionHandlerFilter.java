@@ -6,11 +6,13 @@ import java.util.Map;
 
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import tools.jackson.databind.ObjectMapper;
+
 
 public class ExceptionHandlerFilter extends OncePerRequestFilter{
     @Override
@@ -23,7 +25,7 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter{
                 Map<String , String>error = new HashMap<>();
                 error.put("error",e.getMessage());
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                response.setContentType("appplication/json");
+                response.setContentType("application/json");
                 new ObjectMapper().writeValue(response.getOutputStream(), error);
             }
         }

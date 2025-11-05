@@ -36,5 +36,5 @@ public class User {
     private List<Ticket> tickets;
 
     @OneToMany(mappedBy = "creator", cascade = CascadeType.ALL)
-    private List<Comments> comments;
+    private List<Comment> comments;
 }
