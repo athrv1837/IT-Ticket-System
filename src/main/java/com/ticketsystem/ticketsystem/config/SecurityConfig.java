@@ -98,6 +98,7 @@ public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Excepti
             .authenticationEntryPoint(authenticationEntryPoint)
         )
         .authorizeHttpRequests(auth -> auth
+            .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/api-docs/**").permitAll()
             //Public Endpoint for Authentication
             .requestMatchers("/api/auth/register", "/api/auth/login").permitAll()
 

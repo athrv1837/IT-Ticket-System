@@ -25,9 +25,12 @@ public class Jwtutil {
     }
 
     public String generateToken(Authentication auth){
+        String role = auth.getAuthorities().isEmpty() 
+                    ? "ROLE_EMPLOYEE"
+                    : auth.getAuthorities().iterator().next().getAuthority();
         return Jwts.builder()
                 .setSubject(auth.getName())
-                .claim("role", auth.getAuthorities().iterator().next().getAuthority())
+                .claim("role", role)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expirationtime))
                 .signWith(getSigningkey(),SignatureAlgorithm.HS256)

@@ -2,6 +2,8 @@ package com.ticketsystem.ticketsystem.DTO;
 
 import com.ticketsystem.ticketsystem.enums.TicketCategory;
 import com.ticketsystem.ticketsystem.enums.TicketPriority;
+import com.ticketsystem.ticketsystem.enums.TicketStatus;
+
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
@@ -16,5 +18,7 @@ public class TicketUpdateInfo {
     private TicketCategory category;
 
     private TicketPriority priority;
+
+    private TicketStatus status;
 
 }

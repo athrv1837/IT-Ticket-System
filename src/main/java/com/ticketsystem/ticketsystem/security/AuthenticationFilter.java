@@ -21,7 +21,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter{
     public AuthenticationFilter(AuthenticationManager authenticationManager , Jwtutil jwtutil){
         this.authenticationManager = authenticationManager;
         this.jwtutil = jwtutil;
-        setFilterProcessesUrl("/user/authenticate"); // Matches endpoint
+        setFilterProcessesUrl("/api/auth"); // Matches endpoint
     }
 
     @Override

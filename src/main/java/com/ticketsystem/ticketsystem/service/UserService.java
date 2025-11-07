@@ -1,5 +1,7 @@
 package com.ticketsystem.ticketsystem.service;
 
-public interface UserService {
+import com.ticketsystem.ticketsystem.DTO.UserDTO;
 
+public interface UserService {
+    UserDTO getUserByUserame(String username);
 }
