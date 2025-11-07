@@ -2,11 +2,13 @@ package com.ticketsystem.ticketsystem.controller;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import com.ticketsystem.ticketsystem.DTO.TicketCreateDTO;
+import com.ticketsystem.ticketsystem.DTO.TicketDTO;
 import com.ticketsystem.ticketsystem.DTO.TicketUpdateInfo;
 import com.ticketsystem.ticketsystem.entity.Ticket;
 import com.ticketsystem.ticketsystem.entity.UserPrincipal;
@@ -17,18 +19,15 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/api/tickets")
 public class TicketController {
+    @Autowired
+    private TicketService ticketService;
 
-    private final TicketService ticketService;
-
-    public TicketController(TicketService ticketService) {
-        this.ticketService = ticketService;
-    }
 
     @PostMapping
-    public ResponseEntity<Ticket> createTicket(
+    public ResponseEntity<TicketDTO> createTicket(
             @Valid @RequestBody TicketCreateDTO ticketCreateDTO,
             @AuthenticationPrincipal UserPrincipal userPrincipal) {
-        Ticket ticket = ticketService.createTicket(ticketCreateDTO, userPrincipal.getUser());
+        TicketDTO ticket = ticketService.createTicket(ticketCreateDTO, userPrincipal.getUser());
         return ResponseEntity.ok(ticket);
     }
 

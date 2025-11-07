@@ -3,6 +3,7 @@ package com.ticketsystem.ticketsystem.serviceImpl;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
@@ -20,9 +21,11 @@ import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class CommentServiceImpl implements CommentService {
-
+    @Autowired
     private final CommentRepository commentRepository;
+    @Autowired
     private final TicketRepository ticketRepository;
+    @Autowired
     private final AuditLogRepository auditLogRepository;
 
     public CommentServiceImpl(

@@ -3,14 +3,18 @@ package com.ticketsystem.ticketsystem.serviceImpl;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import com.ticketsystem.ticketsystem.DTO.TicketCreateDTO;
+import com.ticketsystem.ticketsystem.DTO.TicketDTO;
 import com.ticketsystem.ticketsystem.DTO.TicketUpdateInfo;
 import com.ticketsystem.ticketsystem.entity.AuditLog;
 import com.ticketsystem.ticketsystem.entity.Ticket;
 import com.ticketsystem.ticketsystem.entity.User;
+import com.ticketsystem.ticketsystem.enums.Role;
+import com.ticketsystem.ticketsystem.mapper.TicketMapper;
 import com.ticketsystem.ticketsystem.repository.AuditLogRepository;
 import com.ticketsystem.ticketsystem.repository.TicketRepository;
 import com.ticketsystem.ticketsystem.service.TicketService;
@@ -19,6 +23,9 @@ import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class TicketServiceImpl implements TicketService {
+
+    @Autowired
+    private TicketMapper mapper;
 
     private final TicketRepository ticketRepository;
     private final AuditLogRepository auditLogRepository;
@@ -29,7 +36,7 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
-    public Ticket createTicket(TicketCreateDTO ticketCreateDTO, User creator) {
+    public TicketDTO createTicket(TicketCreateDTO ticketCreateDTO, User creator) {
         Ticket ticket = new Ticket();
         ticket.setTitle(ticketCreateDTO.getTitle());
         ticket.setDescription(ticketCreateDTO.getDescription());
@@ -41,7 +48,7 @@ public class TicketServiceImpl implements TicketService {
         ticket.setUpdatedAt(LocalDateTime.now());
 
         ticket = ticketRepository.save(ticket);
-
+        TicketDTO ticketDTO = mapper.ticketToTicketDTO(ticket);
         // Create audit log
         AuditLog auditLog = new AuditLog();
         auditLog.setEntityId(ticket.getId());
@@ -51,7 +58,7 @@ public class TicketServiceImpl implements TicketService {
         auditLog.setUser(creator);
         auditLogRepository.save(auditLog);
 
-        return ticket;
+        return ticketDTO;
     }
 
     @Override
@@ -69,8 +76,7 @@ public class TicketServiceImpl implements TicketService {
     public Ticket updateTicket(Long id, TicketUpdateInfo updateInfo, User user) {
         Ticket ticket = getTicketById(id);
 
-        // Check if user is the creator or has admin role
-        if (!ticket.getCreator().equals(user) && !user.getRole().toString().equals("ADMIN")) {
+        if (!ticket.getCreator().equals(user) && !user.getRole().toString().equals(Role.IT_SUPPORT.toString())) {
             throw new AccessDeniedException("You don't have permission to update this ticket");
         }
 

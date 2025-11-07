@@ -2,6 +2,7 @@ package com.ticketsystem.ticketsystem.controller;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +18,7 @@ import jakarta.validation.Valid;
 @RequestMapping("/api/tickets/{ticketId}/comments")
 public class CommentController {
 
+    @Autowired
     private final CommentService commentService;
 
     public CommentController(CommentService commentService) {
