@@ -8,7 +8,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import com.ticketsystem.ticketsystem.DTO.CommentDTO;
-import com.ticketsystem.ticketsystem.entity.Comment;
 import com.ticketsystem.ticketsystem.entity.UserPrincipal;
 import com.ticketsystem.ticketsystem.service.CommentService;
 
@@ -26,16 +25,16 @@ public class CommentController {
     }
 
     @PostMapping
-    public ResponseEntity<Comment> addComment(
+    public ResponseEntity<CommentDTO> addComment(
             @PathVariable Long ticketId,
             @Valid @RequestBody CommentDTO commentDTO,
             @AuthenticationPrincipal UserPrincipal userPrincipal) {
-        Comment comment = commentService.addComment(ticketId, commentDTO, userPrincipal.getUser());
+        CommentDTO comment = commentService.addComment(ticketId, commentDTO, userPrincipal.getUser());
         return ResponseEntity.ok(comment);
     }
 
     @GetMapping
-    public ResponseEntity<List<Comment>> getTicketComments(@PathVariable Long ticketId) {
+    public ResponseEntity<List<CommentDTO>> getTicketComments(@PathVariable Long ticketId) {
         return ResponseEntity.ok(commentService.getCommentsByTicket(ticketId));
     }
 
@@ -49,12 +48,12 @@ public class CommentController {
     }
 
     @PutMapping("/{commentId}")
-    public ResponseEntity<Comment> updateComment(
+    public ResponseEntity<CommentDTO> updateComment(
             @PathVariable Long ticketId,
             @PathVariable Long commentId,
             @Valid @RequestBody CommentDTO commentDTO,
             @AuthenticationPrincipal UserPrincipal userPrincipal) {
-        Comment comment = commentService.updateComment(ticketId, commentId, commentDTO, userPrincipal.getUser());
+        CommentDTO comment = commentService.updateComment(ticketId, commentId, commentDTO, userPrincipal.getUser());
         return ResponseEntity.ok(comment);
     }
 }

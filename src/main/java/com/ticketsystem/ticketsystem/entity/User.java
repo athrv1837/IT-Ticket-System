@@ -2,6 +2,7 @@ package com.ticketsystem.ticketsystem.entity;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ticketsystem.ticketsystem.enums.Role;
 
 import jakarta.persistence.CascadeType;
@@ -32,10 +33,11 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     private Role role;
-
+    @JsonIgnore
     @OneToMany(mappedBy = "creator", cascade = CascadeType.ALL , fetch = FetchType.LAZY)
     private List<Ticket> tickets;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "creator", cascade = CascadeType.ALL)
     private List<Comment> comments;
 }

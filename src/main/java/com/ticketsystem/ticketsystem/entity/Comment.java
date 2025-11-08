@@ -3,6 +3,7 @@ package com.ticketsystem.ticketsystem.entity;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -29,16 +30,20 @@ public class Comment {
 
     @ManyToOne
     @JoinColumn(name = "ticket_id")
+    @JsonIgnore
     private Ticket ticket;
 
     @ManyToOne
     @JoinColumn(name = "creator_id")
+    @JsonIgnore
     private User creator;
 
     private LocalDateTime createdAt = LocalDateTime.now();
     private LocalDateTime updatedAt = LocalDateTime.now();
 
+
     @OneToMany(mappedBy = "entityId", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<AuditLog> auditLogs;
 
 }

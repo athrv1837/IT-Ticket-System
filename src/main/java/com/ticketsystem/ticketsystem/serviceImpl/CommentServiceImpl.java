@@ -12,20 +12,23 @@ import com.ticketsystem.ticketsystem.entity.AuditLog;
 import com.ticketsystem.ticketsystem.entity.Comment;
 import com.ticketsystem.ticketsystem.entity.Ticket;
 import com.ticketsystem.ticketsystem.entity.User;
+import com.ticketsystem.ticketsystem.enums.Role;
 import com.ticketsystem.ticketsystem.repository.AuditLogRepository;
 import com.ticketsystem.ticketsystem.repository.CommentRepository;
 import com.ticketsystem.ticketsystem.repository.TicketRepository;
 import com.ticketsystem.ticketsystem.service.CommentService;
+import com.ticketsystem.ticketsystem.utils.DTOMapper;
 
 import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class CommentServiceImpl implements CommentService {
+
     @Autowired
+    private DTOMapper dtoMapper;
+
     private final CommentRepository commentRepository;
-    @Autowired
     private final TicketRepository ticketRepository;
-    @Autowired
     private final AuditLogRepository auditLogRepository;
 
     public CommentServiceImpl(
@@ -38,9 +41,16 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public Comment addComment(Long ticketId, CommentDTO commentDTO, User user) {
+    public CommentDTO addComment(Long ticketId, CommentDTO commentDTO, User user) {
         Ticket ticket = ticketRepository.findById(ticketId)
                 .orElseThrow(() -> new EntityNotFoundException("Ticket not found with id: " + ticketId));
+
+        boolean isCreator = ticket.getCreator().equals(user);
+        boolean isPrivileged = user.getRole() == Role.IT_SUPPORT || user.getRole() == Role.MANAGER;
+
+        if (!isCreator && !isPrivileged) {
+            throw new AccessDeniedException("You don’t have permission to comment on this ticket");
+        }
 
         Comment comment = new Comment();
         comment.setContent(commentDTO.getContent());
@@ -51,23 +61,24 @@ public class CommentServiceImpl implements CommentService {
 
         comment = commentRepository.save(comment);
 
-        // Create audit log
+        //Audit log
         AuditLog auditLog = new AuditLog();
         auditLog.setEntityId(comment.getId());
         auditLog.setEntityType("COMMENT");
         auditLog.setAction("CREATE");
+        auditLog.setChanges("Comment added by " + user.getUsername());
         auditLog.setTimestamp(LocalDateTime.now());
         auditLog.setUser(user);
         auditLogRepository.save(auditLog);
 
-        return comment;
+        return dtoMapper.toCommentDTO(comment);
     }
 
     @Override
-    public List<Comment> getCommentsByTicket(Long ticketId) {
+    public List<CommentDTO> getCommentsByTicket(Long ticketId) {
         Ticket ticket = ticketRepository.findById(ticketId)
                 .orElseThrow(() -> new EntityNotFoundException("Ticket not found with id: " + ticketId));
-        return commentRepository.findByTicketOrderByCreatedAtDesc(ticket);
+        return dtoMapper.tCommentDTOList(commentRepository.findByTicketOrderByCreatedAtDesc(ticket));
     }
 
     @Override
@@ -79,25 +90,28 @@ public class CommentServiceImpl implements CommentService {
             throw new EntityNotFoundException("Comment not found in ticket: " + ticketId);
         }
 
-        // Check if user is the creator or has admin role
-        if (!comment.getCreator().equals(user) && !user.getRole().toString().equals("ADMIN")) {
-            throw new AccessDeniedException("You don't have permission to delete this comment");
+        boolean isCreator = comment.getCreator().equals(user);
+        boolean isPrivileged = user.getRole() == Role.IT_SUPPORT || user.getRole() == Role.MANAGER;
+
+        if (!isCreator && !isPrivileged) {
+            throw new AccessDeniedException("You don’t have permission to delete this comment");
         }
 
         commentRepository.delete(comment);
 
-        // Create audit log
+        //Audit log
         AuditLog auditLog = new AuditLog();
         auditLog.setEntityId(commentId);
         auditLog.setEntityType("COMMENT");
         auditLog.setAction("DELETE");
+        auditLog.setChanges("Comment deleted by " + user.getUsername());
         auditLog.setTimestamp(LocalDateTime.now());
         auditLog.setUser(user);
         auditLogRepository.save(auditLog);
     }
 
     @Override
-    public Comment updateComment(Long ticketId, Long commentId, CommentDTO commentDTO, User user) {
+    public CommentDTO updateComment(Long ticketId, Long commentId, CommentDTO commentDTO, User user) {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new EntityNotFoundException("Comment not found with id: " + commentId));
 
@@ -105,25 +119,29 @@ public class CommentServiceImpl implements CommentService {
             throw new EntityNotFoundException("Comment not found in ticket: " + ticketId);
         }
 
-        // Check if user is the creator or has admin role
-        if (!comment.getCreator().equals(user) && !user.getRole().toString().equals("ADMIN")) {
-            throw new AccessDeniedException("You don't have permission to update this comment");
+        boolean isCreator = comment.getCreator().equals(user);
+        boolean isPrivileged = user.getRole() == Role.IT_SUPPORT || user.getRole() == Role.MANAGER;
+
+        if (!isCreator && !isPrivileged) {
+            throw new AccessDeniedException("You don’t have permission to update this comment");
         }
 
+        String oldContent = comment.getContent();
         comment.setContent(commentDTO.getContent());
         comment.setUpdatedAt(LocalDateTime.now());
-
         comment = commentRepository.save(comment);
 
-        // Create audit log
+        //Audit log
         AuditLog auditLog = new AuditLog();
         auditLog.setEntityId(comment.getId());
         auditLog.setEntityType("COMMENT");
         auditLog.setAction("UPDATE");
+        auditLog.setChanges(String.format("Comment updated by %s: \"%s\" → \"%s\"",
+                user.getUsername(), oldContent, comment.getContent()));
         auditLog.setTimestamp(LocalDateTime.now());
         auditLog.setUser(user);
         auditLogRepository.save(auditLog);
 
-        return comment;
+        return dtoMapper.toCommentDTO(comment);
     }
 }

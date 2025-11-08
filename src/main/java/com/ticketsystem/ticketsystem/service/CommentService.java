@@ -7,8 +7,8 @@ import com.ticketsystem.ticketsystem.entity.Comment;
 import com.ticketsystem.ticketsystem.entity.User;
 
 public interface CommentService {
-    Comment addComment(Long ticketId, CommentDTO commentDTO, User user);
-    List<Comment> getCommentsByTicket(Long ticketId);
+    CommentDTO addComment(Long ticketId, CommentDTO commentDTO, User user);
+    List<CommentDTO> getCommentsByTicket(Long ticketId);
     void deleteComment(Long ticketId, Long commentId, User user);
-    Comment updateComment(Long ticketId, Long commentId, CommentDTO commentDTO, User user);
+    CommentDTO updateComment(Long ticketId, Long commentId, CommentDTO commentDTO, User user);
 }

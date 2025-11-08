@@ -15,6 +15,8 @@ public class TicketDTO {
     private TicketPriority priority;
     private Long creatorId;
     private String creatorUsername;
+    private Long assignedToId;
+    private String assignedToUsername;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }
