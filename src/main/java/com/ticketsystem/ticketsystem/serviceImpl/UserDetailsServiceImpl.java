@@ -11,7 +11,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.ticketsystem.ticketsystem.DTO.UserDTO;
+import com.ticketsystem.ticketsystem.DTO.UserResgistrationDTO;
 import com.ticketsystem.ticketsystem.entity.PasswordResetToken;
 import com.ticketsystem.ticketsystem.entity.User;
 import com.ticketsystem.ticketsystem.entity.UserPrincipal;
@@ -42,7 +42,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
     
     
-    public User createUser(UserDTO dto) {
+    public User createUser(UserResgistrationDTO dto) {
         if(userRepository.findByUsername(dto.getUsername()).isPresent()){
             throw new DuplicateUsernameException("User Already exists !");
         }
@@ -63,6 +63,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         resetToken.setUser(user);
         resetToken.setToken(token);
         resetToken.setExpiryDate(LocalDateTime.now().plusMinutes(15));
+        //System.out.println(resetToken);
         passwordResetTokenRepository.save(resetToken);
 
         return token;
@@ -76,6 +77,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             passwordResetTokenRepository.delete(resetToken);
             throw new IllegalArgumentException("Password reset token has expired");
         }
+
+        //System.out.println(resetToken);
 
         User user = resetToken.getUser();
         user.setPassword(passwordEncoder.encode(newPassword));

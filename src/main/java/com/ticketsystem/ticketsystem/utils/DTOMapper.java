@@ -25,7 +25,6 @@ public class DTOMapper {
         userDTO.setUsername(user.getUsername());
         userDTO.setEmail(user.getEmail());
         userDTO.setRole(user.getRole());
-
         return userDTO;
     }
 
