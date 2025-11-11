@@ -100,7 +100,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/api-docs/**").permitAll()
                         // Public Endpoint for Authentication
-                        .requestMatchers("/api/auth/register", "/api/auth/login").permitAll()
+                        .requestMatchers("/api/auth/register", "/api/auth/login", "/api/auth/forgot-password", "/api/auth/reset-password").permitAll()
 
                         .requestMatchers(HttpMethod.PATCH, "/api/tickets/*/assign")
                         .hasAnyAuthority("ROLE_IT_SUPPORT", "ROLE_MANAGER")
@@ -122,6 +122,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/tickets/*/comments")
                         .hasAnyRole("EMPLOYEE", "IT_SUPPORT", "MANAGER")
                         .requestMatchers("/api/tickets/*/audit").hasAnyRole("IT_SUPPORT", "MANAGER")
+                        .requestMatchers("/api/analytics/my-workload").hasAnyRole("IT_SUPPORT")
                         .requestMatchers("/api/analytics/**").hasRole("MANAGER")
                         .anyRequest().authenticated())
                 .addFilterBefore(new ExceptionHandlerFilter(), UsernamePasswordAuthenticationFilter.class)

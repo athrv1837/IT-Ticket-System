@@ -35,7 +35,7 @@ public class DTOMapper {
         return users.stream().map(this::toUserDTO).collect(Collectors.toList());
     }
 
-    public TicketDTO toTicketDTO(Ticket ticket){
+    public TicketDTO toTicketDTO(Ticket ticket) {
         TicketDTO ticketDTO = new TicketDTO();
         ticketDTO.setId(ticket.getId());
         ticketDTO.setTitle(ticket.getTitle());
@@ -45,50 +45,57 @@ public class DTOMapper {
         ticketDTO.setPriority(ticket.getPriority());
         ticketDTO.setCreatorId(ticket.getCreator().getId());
         ticketDTO.setCreatorUsername(ticket.getCreator().getUsername());
-        ticketDTO.setAssignedToId(ticket.getAssignedTo().getId());
-        ticketDTO.setAssignedToUsername(ticket.getAssignedTo().getUsername());
+        // ticketDTO.setAssignedToId(ticket.getAssignedTo().getId());
+        // ticketDTO.setAssignedToUsername(ticket.getAssignedTo().getUsername());
+        if (ticket.getAssignedTo() != null) {
+            ticketDTO.setAssignedToId(ticket.getAssignedTo().getId());
+            ticketDTO.setAssignedToUsername(ticket.getAssignedTo().getUsername());
+        } else {
+            ticketDTO.setAssignedToId(null);
+            ticketDTO.setAssignedToUsername(null);
+        }
         ticketDTO.setCreatedAt(ticket.getCreatedAt());
         ticketDTO.setUpdatedAt(ticket.getUpdatedAt());
         return ticketDTO;
     }
 
-    public List<TicketDTO> toTicketList(List<Ticket>tickets){
-        if(tickets == null){
+    public List<TicketDTO> toTicketList(List<Ticket> tickets) {
+        if (tickets == null) {
             return null;
         }
 
         return tickets.stream().map(this::toTicketDTO).collect(Collectors.toList());
     }
 
-    public AuditLogDTO toAuditLogDTO(AuditLog auditLog){
+    public AuditLogDTO toAuditLogDTO(AuditLog auditLog) {
         AuditLogDTO auditLogDTO = new AuditLogDTO();
         auditLogDTO.setId(auditLog.getId());
         auditLogDTO.setAction(auditLog.getAction());
         auditLogDTO.setChanges(auditLog.getChanges());
         auditLogDTO.setEntityId(auditLog.getEntityId());
         auditLogDTO.setEntityType(auditLog.getEntityType());
-        auditLogDTO.setTimestamp(auditLog.getTimestamp());   
+        auditLogDTO.setTimestamp(auditLog.getTimestamp());
         auditLogDTO.setUserUsername(auditLog.getUser().getUsername());
         return auditLogDTO;
     }
 
-    public List<AuditLogDTO> toAdAuditLogDTOList(List<AuditLog>AuditLogs){
-        if(AuditLogs == null){
+    public List<AuditLogDTO> toAdAuditLogDTOList(List<AuditLog> AuditLogs) {
+        if (AuditLogs == null) {
             return null;
         }
 
         return AuditLogs.stream().map(this::toAuditLogDTO).collect(Collectors.toList());
     }
 
-    public CommentDTO toCommentDTO(Comment comment){
+    public CommentDTO toCommentDTO(Comment comment) {
         CommentDTO commentDTO = new CommentDTO();
         commentDTO.setId(comment.getId());
         commentDTO.setContent(comment.getContent());
         return commentDTO;
     }
 
-    public List<CommentDTO> tCommentDTOList(List<Comment>comments){
-        if(comments == null){
+    public List<CommentDTO> tCommentDTOList(List<Comment> comments) {
+        if (comments == null) {
             return null;
         }
 
