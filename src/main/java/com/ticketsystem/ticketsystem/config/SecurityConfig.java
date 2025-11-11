@@ -59,36 +59,6 @@ public class SecurityConfig {
         return new CustomAuthenticationManager(userService, passwordEncoder);
     }
 
-    // @Bean
-    // public SecurityFilterChain securityFilterChain(HttpSecurity http) {
-    // try {
-    // http
-    // // .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-    // .csrf(csrf -> csrf.disable())
-    // .sessionManagement(session ->
-    // session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-    // .authorizeHttpRequests(auth -> auth
-    // //Public Endpoint for Authentication
-    // .requestMatchers("/api/auth/register", "/api/auth/login").permitAll()
-
-    // .requestMatchers("/users", "/user/authenticate").permitAll() // Open
-    // registration and login
-    // .requestMatchers(HttpMethod.GET, "/users/**").authenticated()
-    // .requestMatchers("/users/**").authenticated() // Other user endpoints
-    // .anyRequest().authenticated())
-    // .exceptionHandling(exc -> exc
-    // .accessDeniedHandler(accessDeniedHandler)
-    // .authenticationEntryPoint(authenticationEntryPoint))
-    // .addFilterBefore(new ExceptionHandlerFilter(),
-    // UsernamePasswordAuthenticationFilter.class)
-    // .addFilter(new AuthenticationFilter(customAuthenticationManager(), jwtUtil))
-    // .addFilter(new JWTAuthFilter(jwtUtil, userService));
-    // } catch (Exception e) {
-    // System.out.println("Error configuring security: " + e.getMessage());
-    // }
-    // return http.build();
-    // }
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
